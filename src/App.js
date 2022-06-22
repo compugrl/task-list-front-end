@@ -1,20 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TaskList from './components/TaskList.js';
 import './App.css';
+import axios from 'axios';
 
 function App() {
-  const [taskData, setTaskData] = useState([
-    {
-      id: 1,
-      title: 'Mow the lawn',
-      isComplete: false,
-    },
-    {
-      id: 2,
-      title: 'Cook Pasta',
-      isComplete: true,
-    },
-  ]);
+  const [taskData, setTaskData] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const getTaskData = () => {
+    axios
+      .get('https://task-list-api-c17.herokuapp.com/tasks')
+      .then((response) => {
+        setTaskData(response.data);
+      })
+      .catch((error) => {
+        setErrorMessage(<section>{error.response.data}</section>);
+      });
+  };
+
+  useEffect(() => {
+    getTaskData();
+    console.log(taskData);
+  }, []);
 
   const updateTaskData = (updatedTask) => {
     const tasks = taskData.map((task) => {
@@ -37,6 +44,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Ada&apos;s Task List</h1>
+        {errorMessage}
       </header>
       <main>
         <div>
