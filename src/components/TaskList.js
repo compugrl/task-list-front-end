@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Task from './Task';
 import './TaskList.css';
-import axios from 'axios';
 
 const TaskList = (props) => {
   const taskListJSX = props.taskArray.map((task) => {
