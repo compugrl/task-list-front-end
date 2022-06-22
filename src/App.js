@@ -3,24 +3,35 @@ import TaskList from './components/TaskList.js';
 import './App.css';
 import axios from 'axios';
 
+const kBaseUrl = 'https://task-list-api-c17.herokuapp.com';
+
+const taskApiToJson = (task) => {
+  const { description, id, is_complete: isComplete, title } = task;
+  return { description, id, isComplete, title };
+};
+
+const getTaskData = () => {
+  return axios
+    .get(`${kBaseUrl}/tasks`)
+    .then((response) => {
+      return response.data.map(taskApiToJson);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 function App() {
   const [taskData, setTaskData] = useState([]);
-  const [errorMessage, setErrorMessage] = useState('');
 
-  const getTaskData = () => {
-    axios
-      .get('https://task-list-api-c17.herokuapp.com/tasks')
-      .then((response) => {
-        setTaskData(response.data);
-      })
-      .catch((error) => {
-        setErrorMessage(<section>{error.response.data}</section>);
-      });
+  const updateTasks = () => {
+    getTaskData().then((tasks) => {
+      setTaskData(tasks);
+    });
   };
 
   useEffect(() => {
-    getTaskData();
-    console.log(taskData);
+    updateTasks();
   }, []);
 
   const updateTaskData = (updatedTask) => {
@@ -44,7 +55,6 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Ada&apos;s Task List</h1>
-        {errorMessage}
       </header>
       <main>
         <div>
