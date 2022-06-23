@@ -1,33 +1,46 @@
 import React, { useState } from 'react';
 import './TaskForm.css';
+import PropTypes from 'prop-types';
 
-const TaskForm = () => {
-  const [taskName, setTaskName] = useState('Enter task title');
+const kDefaultFormState = {
+  title: '',
+  description: '',
+};
+
+const TaskForm = ({ onAddTask }) => {
+  const [formData, setFormData] = useState(kDefaultFormState);
 
   const onInput = (event) => {
-    setTaskName(event.target.value);
+    const fieldName = event.target.name;
+    const fieldValue = event.target.value;
+
+    const newFormData = { ...formData, [fieldName]: fieldValue };
+    setFormData(newFormData);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    // onCatDataReady(formData);
-
-    setTaskName('Enter task title');
+    onAddTask(formData);
+    console.log('Handle Submit');
+    setFormData(kDefaultFormState);
   };
 
   return (
-    <section className="taskInput">
+    <form className="taskInput" onSubmit={handleSubmit}>
       <h4>Add Task</h4>
       <input
         type="text"
-        name="taskTitle"
-        value={taskName}
+        name="title"
+        value={formData.title}
         onChange={onInput}
       ></input>
       <input type="submit" value="Submit"></input>
-    </section>
+    </form>
   );
+};
+
+TaskForm.propTypes = {
+  onAddTask: PropTypes.func,
 };
 
 export default TaskForm;

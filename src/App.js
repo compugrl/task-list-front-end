@@ -79,6 +79,26 @@ function App() {
     });
   };
 
+  const addTaskData = (addedTask) => {
+    console.log(addedTask);
+    const requestBody = { ...addedTask };
+
+    return axios
+      .post(`${kBaseUrl}`, requestBody)
+      .then(() => loadTasks())
+      .catch((err) => console.log(err));
+  };
+
+  const handleTaskDataReady = (taskName) => {
+    addTaskData(taskName)
+      .then((newTask) => {
+        loadTasks((oldData) => [...oldData, newTask]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -86,7 +106,7 @@ function App() {
       </header>
       <main>
         <div>
-          <TaskForm></TaskForm>
+          <TaskForm onAddTask={handleTaskDataReady}></TaskForm>
           <TaskList
             taskArray={taskData}
             onUpdateTask={onButtonClick}
