@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './TaskForm.css';
 
 const TaskForm = () => {
   const [taskName, setTaskName] = useState('Enter task title');
@@ -16,17 +17,16 @@ const TaskForm = () => {
   };
 
   return (
-    <>
-      <h3>Add Task</h3>
+    <section className="taskInput">
+      <h4>Add Task</h4>
       <input
         type="text"
-        className="taskInput"
         name="taskTitle"
         value={taskName}
         onChange={onInput}
       ></input>
       <input type="submit" value="Submit"></input>
-    </>
+    </section>
   );
 };
 
