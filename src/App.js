@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import TaskList from './components/TaskList.js';
+import TaskForm from './components/TaskForm';
 import './App.css';
 import axios from 'axios';
 
@@ -85,6 +86,7 @@ function App() {
       </header>
       <main>
         <div>
+          <TaskForm></TaskForm>
           <TaskList
             taskArray={taskData}
             onUpdateTask={onButtonClick}
