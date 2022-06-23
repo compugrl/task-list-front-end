@@ -7,8 +7,7 @@ const Task = (props) => {
   const onCompleteTaskClick = () => {
     const updatedTask = {
       id: props.id,
-      title: props.title,
-      isComplete: !props.isComplete,
+      isComplete: props.isComplete,
     };
 
     props.onUpdate(updatedTask);

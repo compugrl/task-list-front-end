@@ -3,7 +3,7 @@ import TaskList from './components/TaskList.js';
 import './App.css';
 import axios from 'axios';
 
-const kBaseUrl = 'https://task-list-api-c17.herokuapp.com';
+const kBaseUrl = 'https://task-list-api-c17.herokuapp.com/tasks';
 
 const taskApiToJson = (task) => {
   const { description, id, is_complete: isComplete, title } = task;
@@ -12,7 +12,7 @@ const taskApiToJson = (task) => {
 
 const getTaskData = () => {
   return axios
-    .get(`${kBaseUrl}/tasks`)
+    .get(`${kBaseUrl}`)
     .then((response) => {
       return response.data.map(taskApiToJson);
     })
@@ -24,31 +24,58 @@ const getTaskData = () => {
 function App() {
   const [taskData, setTaskData] = useState([]);
 
-  const updateTasks = () => {
+  const loadTasks = () => {
     getTaskData().then((tasks) => {
       setTaskData(tasks);
     });
   };
 
   useEffect(() => {
-    updateTasks();
+    loadTasks();
   }, []);
 
-  const updateTaskData = (updatedTask) => {
-    const tasks = taskData.map((task) => {
-      if (task.id === updatedTask.id) {
-        return updatedTask;
-      } else {
-        return task;
+  const completeTask = (id) => {
+    taskData.map((task) => {
+      if (task.id === id) {
+        axios
+          .patch(`${kBaseUrl}/${id}/mark_complete`)
+          .then(() => loadTasks())
+          .catch((err) => console.log(err));
       }
+      return task;
     });
+  };
 
-    setTaskData(tasks);
+  const incompleteTask = (id) => {
+    taskData.map((task) => {
+      if (task.id === id) {
+        axios
+          .patch(`${kBaseUrl}/${id}/mark_incomplete`)
+          .then(() => loadTasks())
+          .catch((err) => console.log(err));
+      }
+      return task;
+    });
+  };
+
+  const onButtonClick = (updatedTask) => {
+    if (updatedTask.isComplete === false) {
+      completeTask(updatedTask.id);
+    } else {
+      incompleteTask(updatedTask.id);
+    }
   };
 
   const deleteTaskData = (deletedTask) => {
-    const tasks = taskData.filter((task) => task.id !== deletedTask.id);
-    setTaskData(tasks);
+    taskData.map((task) => {
+      if (task.id === deletedTask.id) {
+        axios
+          .delete(`${kBaseUrl}/${task.id}`)
+          .then(() => loadTasks())
+          .catch((err) => console.log(err));
+      }
+      return task;
+    });
   };
 
   return (
@@ -60,7 +87,7 @@ function App() {
         <div>
           <TaskList
             taskArray={taskData}
-            onUpdateTask={updateTaskData}
+            onUpdateTask={onButtonClick}
             onDeleteTask={deleteTaskData}
           ></TaskList>
         </div>
